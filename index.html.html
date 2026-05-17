@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>مەیدان — کرێکار و وەستا</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="app-logo.png">
+<link rel="apple-touch-icon" href="app-logo.png">
+<meta name="theme-color" content="#08090e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" media="print" onload="this.media='all'">
+
+<style>
+:root {
+  --bg:       #08090e;
+  --bg2:      #0e1018;
+  --surface:  rgba(16,18,28,0.92);
+  --glass:    rgba(255,255,255,0.03);
+  --gold:     #c8a84b;
+  --gold2:    #f0d080;
+  --gold3:    #7a6022;
+  --grad:     linear-gradient(135deg,#f0d080 0%,#c8a84b 55%,#7a6022 100%);
+  --grad-r:   linear-gradient(135deg,#7a6022 0%,#c8a84b 55%,#f0d080 100%);
+  --glow:     rgba(200,168,75,0.18);
+  --border:   rgba(200,168,75,0.15);
+  --border2:  rgba(200,168,75,0.3);
+  --text:     #eeeae0;
+  --muted:    #5a5e6e;
+  --muted2:   #8a8f9e;
+  --green:    #3dba7e;
+  --red:      #e05555;
+  --hdr:      70px;
+  --ftr:      80px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Kufi Arabic',sans-serif;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  padding-top:var(--hdr);
+  padding-bottom:calc(var(--ftr) + 10px);
+  min-height:100vh;
+}
+
+/* ─── BACKGROUND ─── */
+body::before{
+  content:'';
+  position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 40% at 50% -10%, rgba(200,168,75,0.1) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 90% 80%, rgba(200,168,75,0.05) 0%, transparent 60%);
+  pointer-events:none;
+}
+
+body::after{
+  content:'';
+  position:fixed;inset:0;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;opacity:.6;
+}
+
+/* ─── HEADER ─── */
+header{
+  position:fixed;top:0;left:0;right:0;
+  height:var(--hdr);
+  z-index:900;
+  background:rgba(8,9,14,0.85);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;
+}
+
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-icon{
+  width:38px;height:38px;
+  border-radius:12px;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 16px var(--glow);
+}
+.logo-icon img{
+  width:100%;height:100%;
+  object-fit:cover;
+  display:block;
+}
+.logo-name{
+  font-size:22px;font-weight:900;
+  background:var(--grad);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+
+.hdr-badge{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(200,168,75,0.08);
+  border:1px solid var(--border2);
+  padding:5px 12px;border-radius:30px;
+  font-size:11px;color:var(--gold2);
+  font-weight:700;
+}
+.hdr-badge i{font-size:10px;}
+
+/* ─── VIEWS ─── */
+.view{
+  display:none;
+  position:relative;z-index:1;
+  padding:20px 16px;
+  max-width:700px;
+  margin:0 auto;
+  animation:fadeUp .22s ease;
+}
+.view.active{display:block;}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* ─── FOOTER NAV ─── */
+footer{
+  position:fixed;bottom:0;left:0;right:0;
+  height:var(--ftr);
+  z-index:900;
+  background:rgba(8,9,14,0.92);
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border-top:1px solid var(--border);
+  border-radius:24px 24px 0 0;
+  display:flex;align-items:center;justify-content:space-around;
+  padding:0 8px 12px;
+}
+
+.tab{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  color:var(--muted);cursor:pointer;
+  transition:color .2s ease;
+  padding:8px 18px;border-radius:16px;
+  font-size:10px;font-weight:700;
+  min-width:56px;
+}
+.tab i{font-size:20px;transition:transform .2s ease;}
+.tab.active{color:var(--gold2);}
+.tab.active i{transform:scale(1.1);filter:drop-shadow(0 0 8px rgba(200,168,75,0.5));}
+
+.tab-add{
+  background:var(--grad);
+  color:#08090e;
+  width:52px;height:52px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+  margin-bottom:18px;
+  box-shadow:0 4px 20px var(--glow),0 0 0 3px rgba(200,168,75,0.15);
+  transition:transform .15s ease, box-shadow .15s ease;
+  cursor:pointer;
+}
+.tab-add:active{transform:scale(0.93);}
+
+/* ─── SECTION TITLE ─── */
+.sec-title{
+  display:flex;align-items:center;gap:10px;
+  font-size:16px;font-weight:900;
+  margin-bottom:14px;
+}
+.sec-title::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(to left, transparent, var(--border));
+}
+
+.page-intro{margin-bottom:22px;}
+.page-intro h2{font-size:22px;font-weight:900;line-height:1.3;}
+.page-intro p{font-size:12px;color:var(--muted2);margin-top:5px;}
+
+/* ─── CITY CHIPS ─── */
+.cities-scroll{
+  display:flex;gap:12px;
+  overflow-x:auto;
+  padding:4px 0 12px;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+}
+.cities-scroll::-webkit-scrollbar{display:none;}
+
+.city-card{
+  min-width:110px;height:140px;
+  border-radius:20px;
+  position:relative;overflow:hidden;
+  flex-shrink:0;
+  scroll-snap-align:start;
+  cursor:pointer;
+  border:1px solid var(--border);
+  background:#0e1018;
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.city-card:active{transform:scale(0.96);}
+.city-card img{
+  width:100%;height:100%;
+  object-fit:cover;
+  display:block;
+  transition:transform .4s ease;
+}
+.city-card:hover img{transform:scale(1.06);}
+.city-card::after{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(to top, rgba(8,9,14,0.92) 0%, rgba(8,9,14,0.2) 60%, transparent 100%);
+}
+.city-name{
+  position:absolute;bottom:12px;right:12px;left:12px;
+  z-index:2;
+  font-size:13px;font-weight:900;
+  text-shadow:0 2px 8px rgba(0,0,0,0.8);
+}
+
+/* skeleton */
+.city-skel{
+  min-width:110px;height:140px;border-radius:20px;
+  background:linear-gradient(90deg,var(--bg2) 25%,rgba(200,168,75,0.04) 50%,var(--bg2) 75%);
+  background-size:200% 100%;
+  animation:shimmer 1.4s infinite;flex-shrink:0;
+}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+/* ─── WORKER CARDS ─── */
+.worker-card{
+  display:flex;align-items:center;gap:14px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;padding:16px;
+  margin-bottom:12px;
+  position:relative;overflow:hidden;
+  transition:border-color .2s ease, transform .15s ease;
+  cursor:pointer;
+  backdrop-filter:blur(10px);
+}
+.worker-card:active{transform:scale(0.985);}
+.worker-card:hover{border-color:var(--border2);}
+
+.worker-card::before{
+  content:'';
+  position:absolute;top:0;right:0;
+  width:80px;height:80px;
+  background:radial-gradient(circle,rgba(200,168,75,0.06) 0%,transparent 70%);
+}
+
+.worker-avatar{
+  width:64px;height:64px;
+  border-radius:18px;
+  object-fit:cover;
+  border:2px solid var(--gold3);
+  flex-shrink:0;
+  background:var(--bg2);
+}
+
+.worker-info{flex:1;min-width:0;}
+.worker-name{
+  font-size:15px;font-weight:900;
+  background:var(--grad);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.worker-skill{font-size:12px;color:var(--muted2);margin-top:3px;}
+.worker-phone{
+  font-size:13px;color:var(--gold2);
+  font-weight:700;margin-top:6px;
+  display:flex;align-items:center;gap:5px;
+}
+.worker-phone i{font-size:11px;color:var(--gold3);}
+
+.role-badge{
+  font-size:10px;font-weight:800;
+  padding:3px 10px;border-radius:20px;
+  border:1px solid;flex-shrink:0;
+}
+.badge-master{color:var(--gold2);border-color:rgba(200,168,75,0.3);background:rgba(200,168,75,0.07);}
+.badge-worker{color:#6ab4f5;border-color:rgba(106,180,245,0.3);background:rgba(106,180,245,0.07);}
+
+.online-dot{
+  width:9px;height:9px;border-radius:50%;
+  background:var(--green);
+  position:absolute;top:14px;left:14px;
+  box-shadow:0 0 8px var(--green);
+}
+
+.worker-skel{
+  height:96px;border-radius:20px;margin-bottom:12px;
+  background:linear-gradient(90deg,var(--bg2) 25%,rgba(200,168,75,0.03) 50%,var(--bg2) 75%);
+  background-size:200% 100%;animation:shimmer 1.4s infinite;
+}
+
+/* ─── EMPTY STATE ─── */
+.empty{
+  text-align:center;padding:50px 20px;color:var(--muted);
+}
+.empty i{font-size:48px;opacity:.15;margin-bottom:14px;display:block;}
+.empty p{font-size:13px;line-height:1.7;}
+
+/* ─── ROLE MODAL ─── */
+.overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  z-index:800;
+  display:none;align-items:flex-end;justify-content:center;
+  padding:20px;
+}
+.overlay.open{display:flex;}
+
+.bottom-sheet{
+  background:var(--bg2);
+  border:1px solid var(--border2);
+  border-radius:28px;
+  padding:28px 24px;
+  width:100%;max-width:420px;
+  animation:slideUp .25s ease;
+}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+
+.sheet-handle{
+  width:40px;height:4px;
+  background:var(--border2);
+  border-radius:4px;
+  margin:0 auto 24px;
+}
+
+.sheet-title{
+  font-size:17px;font-weight:900;
+  background:var(--grad);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  text-align:center;margin-bottom:20px;
+}
+
+.role-btn{
+  width:100%;padding:16px;border:none;
+  border-radius:18px;
+  font-family:'Noto Kufi Arabic',sans-serif;
+  font-size:15px;font-weight:800;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  transition:all .15s ease;
+  margin-bottom:10px;
+}
+.role-btn:active{transform:scale(0.97);}
+.role-btn-master{background:var(--grad);color:#08090e;box-shadow:0 4px 20px var(--glow);}
+.role-btn-worker{
+  background:rgba(106,180,245,0.1);
+  border:1px solid rgba(106,180,245,0.25);
+  color:#6ab4f5;
+}
+.role-btn-cancel{
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--muted2);
+  margin-top:4px;
+}
+
+/* ─── SEARCH ─── */
+.search-wrap{
+  position:relative;margin-bottom:20px;
+}
+.search-icon{
+  position:absolute;top:50%;right:16px;transform:translateY(-50%);
+  color:var(--muted);font-size:15px;pointer-events:none;
+}
+.search-input{
+  width:100%;
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:15px 44px 15px 16px;
+  border-radius:18px;
+  font-family:'Noto Kufi Arabic',sans-serif;
+  font-size:14px;outline:none;
+  transition:border-color .2s ease, box-shadow .2s ease;
+}
+.search-input:focus{border-color:var(--border2);box-shadow:0 0 0 4px var(--glow);}
+.search-input::placeholder{color:var(--muted);}
+
+/* ─── POST FORM ─── */
+.form-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:24px;padding:24px;
+  backdrop-filter:blur(12px);
+}
+.form-card h2{
+  font-size:18px;font-weight:900;
+  background:var(--grad);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  text-align:center;margin-bottom:20px;
+}
+.field{margin-bottom:14px;}
+.field-label{font-size:11px;color:var(--muted2);margin-bottom:6px;display:block;font-weight:700;}
+.field-input{
+  width:100%;
+  background:rgba(0,0,0,0.3);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:14px 16px;
+  border-radius:15px;
+  font-family:'Noto Kufi Arabic',sans-serif;
+  font-size:14px;outline:none;
+  transition:border-color .2s ease, box-shadow .2s ease;
+}
+.field-input:focus{border-color:var(--border2);box-shadow:0 0 0 3px var(--glow);}
+.field-input::placeholder{color:var(--muted);}
+textarea.field-input{resize:none;}
+
+.btn-submit{
+  width:100%;
+  background:var(--grad);
+  color:#08090e;
+  border:none;
+  padding:16px;
+  border-radius:17px;
+  font-family:'Noto Kufi Arabic',sans-serif;
+  font-size:15px;font-weight:900;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  margin-top:18px;
+  transition:opacity .15s ease,transform .15s ease;
+  box-shadow:0 6px 24px var(--glow);
+}
+.btn-submit:active{opacity:.85;transform:scale(0.97);}
+.btn-submit:disabled{opacity:.5;pointer-events:none;}
+
+/* ─── ADS ─── */
+.ad-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;overflow:hidden;
+  margin-bottom:14px;position:relative;
+}
+.ad-card img{width:100%;display:block;object-fit:cover;}
+.ad-tag{
+  position:absolute;top:10px;right:10px;
+  background:rgba(8,9,14,0.9);
+  color:var(--gold2);
+  font-size:10px;font-weight:800;
+  padding:4px 10px;border-radius:20px;
+  border:1px solid var(--border2);
+}
+
+/* ─── TOAST ─── */
+#toast{
+  position:fixed;bottom:calc(var(--ftr) + 16px);left:50%;
+  transform:translateX(-50%) translateY(10px);
+  background:var(--bg2);
+  border:1px solid var(--border2);
+  border-radius:16px;padding:12px 22px;
+  font-size:13px;font-weight:700;color:var(--gold2);
+  box-shadow:0 8px 30px rgba(0,0,0,0.6);
+  z-index:950;
+  opacity:0;
+  transition:all .28s ease;
+  white-space:nowrap;pointer-events:none;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ─── INSTALL BANNER ─── */
+#install-bar{
+  position:fixed;bottom:calc(var(--ftr) + 14px);left:12px;right:12px;
+  background:var(--bg2);
+  border:1.5px solid var(--border2);
+  border-radius:20px;padding:14px 18px;
+  display:none;align-items:center;gap:12px;justify-content:space-between;
+  box-shadow:0 10px 36px rgba(0,0,0,0.7);
+  z-index:890;animation:slideUp .3s ease;
+}
+.install-info{display:flex;align-items:center;gap:10px;}
+.install-icon{
+  width:38px;height:38px;
+  border-radius:12px;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.install-icon img{width:100%;height:100%;object-fit:cover;display:block;}
+.install-txt h4{font-size:12px;font-weight:800;}
+.install-txt p{font-size:10px;color:var(--muted2);}
+.install-btns{display:flex;gap:8px;flex-shrink:0;}
+.install-btns button{
+  font-family:'Noto Kufi Arabic',sans-serif;
+  font-size:11px;font-weight:800;
+  padding:7px 14px;border-radius:12px;cursor:pointer;
+  transition:opacity .15s ease;
+}
+.btn-install-yes{background:var(--grad);color:#08090e;border:none;}
+.btn-install-no{background:transparent;color:var(--muted2);border:1px solid var(--border);}
+
+/* ─── STATS BAR ─── */
+.stats-bar{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:10px;margin-bottom:24px;
+}
+.stat-item{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:14px 10px;
+  text-align:center;
+  backdrop-filter:blur(10px);
+}
+.stat-num{
+  font-size:20px;font-weight:900;
+  background:var(--grad);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  display:block;
+}
+.stat-lbl{font-size:10px;color:var(--muted2);font-weight:700;}
+
+/* ─── FEATURES ─── */
+.features-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:10px;margin-bottom:24px;
+}
+.feat-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;padding:16px 14px;
+  backdrop-filter:blur(10px);
+  transition:border-color .2s ease, transform .15s ease;
+}
+.feat-card:active{transform:scale(0.97);}
+.feat-icon{
+  width:40px;height:40px;
+  background:rgba(200,168,75,0.1);
+  border:1px solid var(--border2);
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;color:var(--gold2);
+  margin-bottom:10px;
+}
+.feat-title{font-size:13px;font-weight:800;margin-bottom:4px;}
+.feat-desc{font-size:10px;color:var(--muted2);line-height:1.5;}
+
+/* ─── HOW IT WORKS ─── */
+.steps-wrap{margin-bottom:24px;}
+.step-item{
+  display:flex;align-items:flex-start;gap:14px;
+  margin-bottom:14px;
+}
+.step-num{
+  min-width:32px;height:32px;
+  background:var(--grad);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:900;color:#08090e;
+  flex-shrink:0;
+  box-shadow:0 4px 12px var(--glow);
+}
+.step-content{}
+.step-title{font-size:13px;font-weight:800;margin-bottom:2px;}
+.step-desc{font-size:11px;color:var(--muted2);line-height:1.5;}
+
+/* ─── INSTALL POPUP MODAL ─── */
+#install-popup{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.8);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  z-index:9998;
+  display:none;align-items:center;justify-content:center;
+  padding:24px;
+}
+#install-popup.open{display:flex;}
+.popup-card{
+  background:var(--bg2);
+  border:1.5px solid var(--border2);
+  border-radius:28px;
+  padding:32px 24px;
+  width:100%;max-width:360px;
+  text-align:center;
+  animation:slideUp .3s ease;
+  position:relative;
+}
+.popup-logo{
+  width:80px;height:80px;
+  border-radius:24px;
+  overflow:hidden;
+  margin:0 auto 16px;
+  box-shadow:0 8px 32px var(--glow);
+  border:2px solid var(--border2);
+}
+.popup-logo img{width:100%;height:100%;object-fit:cover;display:block;}
+.popup-logo-fallback{
+  width:80px;height:80px;
+  border-radius:24px;
+  background:var(--grad);
+  margin:0 auto 16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:32px;font-weight:900;color:#08090e;
+  box-shadow:0 8px 32px var(--glow);
+}
+.popup-title{
+  font-size:22px;font-weight:900;
+  background:var(--grad);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:6px;
+}
+.popup-subtitle{font-size:12px;color:var(--muted2);margin-bottom:20px;line-height:1.6;}
+.popup-features{
+  display:flex;flex-direction:column;gap:8px;
+  margin-bottom:24px;
+  text-align:right;
+}
+.popup-feat{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(200,168,75,0.05);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:10px 14px;
+}
+.popup-feat i{color:var(--gold2);font-size:14px;flex-shrink:0;}
+.popup-feat span{font-size:12px;font-weight:700;}
+.popup-install-btn{
+  width:100%;
+  background:var(--grad);
+  color:#08090e;
+  border:none;
+  padding:16px;
+  border-radius:17px;
+  font-family:'Noto Kufi Arabic',sans-serif;
+  font-size:15px;font-weight:900;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 6px 24px var(--glow);
+  transition:opacity .15s ease, transform .15s ease;
+  margin-bottom:10px;
+}
+.popup-install-btn:active{opacity:.85;transform:scale(0.97);}
+.popup-later-btn{
+  width:100%;background:transparent;
+  border:1px solid var(--border);
+  color:var(--muted2);
+  padding:12px;
+  border-radius:15px;
+  font-family:'Noto Kufi Arabic',sans-serif;
+  font-size:13px;font-weight:700;
+  cursor:pointer;
+  transition:opacity .15s ease;
+}
+.popup-close{
+  position:absolute;top:14px;left:14px;
+  width:30px;height:30px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid var(--border);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--muted2);font-size:13px;
+}
+#splash{
+  position:fixed;inset:0;
+  background:var(--bg);
+  z-index:9999;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:24px;
+}
+.splash-logo{
+  display:flex;align-items:center;gap:14px;
+}
+.splash-icon{
+  width:64px;height:64px;
+  border-radius:20px;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 32px var(--glow);
+  animation:iconPulse 1.8s ease infinite;
+}
+.splash-icon img{width:100%;height:100%;object-fit:cover;display:block;}
+@keyframes iconPulse{
+  0%,100%{box-shadow:0 8px 32px var(--glow);}
+  50%{box-shadow:0 8px 48px rgba(200,168,75,0.4);}
+}
+.splash-text{font-size:30px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.splash-sub{font-size:12px;color:var(--muted);}
+.progress-bar{
+  width:160px;height:2px;
+  background:var(--border);border-radius:2px;overflow:hidden;
+}
+.progress-fill{
+  height:100%;width:0;background:var(--grad);border-radius:2px;
+  animation:progressAnim 1.6s ease forwards;
+}
+@keyframes progressAnim{
+  0%{width:0;}40%{width:60%;}70%{width:80%;}100%{width:100%;}
+}
+</style>
+</head>
+<body>
+
+<!-- INSTALL POPUP -->
+<div id="install-popup">
+  <div class="popup-card">
+    <div class="popup-close" onclick="closeInstallPopup()"><i class="fas fa-times"></i></div>
+    <div class="popup-logo">
+      <img src="https://www.dropbox.com/scl/fi/xzftuduzdy22c5o95iq0m/Picsart_26-05-17_20-31-33-991.jpg?rlkey=x3yhlg6q75tb91gffupd0gbu9&st=7bpcq2my&raw=1" alt="مەیدان" onerror="this.parentElement.style.cssText='width:80px;height:80px;border-radius:24px;background:var(--grad);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:#08090e;box-shadow:0 8px 32px var(--glow)';this.style.display='none';this.parentElement.innerHTML='م'">
+    </div>
+    <div class="popup-title">ئەپی مەیدان</div>
+    <div class="popup-subtitle">ئەپەکەمان بخرە سەر شاشەی مۆبایلەکەت و بەخێراتری و ئاسانتری بەکارببە</div>
+    <div class="popup-features">
+      <div class="popup-feat"><i class="fas fa-bolt"></i><span>خێراتر و ئاسانتر کار دەکات</span></div>
+      <div class="popup-feat"><i class="fas fa-wifi-slash"></i><span>ئۆفلاین بەکارهێنان</span></div>
+      <div class="popup-feat"><i class="fas fa-bell"></i><span>ئاگادارکردنەوەی خێرا</span></div>
+      <div class="popup-feat"><i class="fas fa-mobile-alt"></i><span>شێوەی ئەپی نیشتمانی</span></div>
+    </div>
+    <button class="popup-install-btn" id="popup-install-btn" onclick="triggerInstallFromPopup()">
+      <i class="fas fa-download"></i> داگرتنی ئەپ
+    </button>
+    <button class="popup-later-btn" onclick="closeInstallPopup()">دواتر</button>
+  </div>
+</div>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="splash-logo">
+    <div class="splash-icon"><img src="https://www.dropbox.com/scl/fi/xzftuduzdy22c5o95iq0m/Picsart_26-05-17_20-31-33-991.jpg?rlkey=x3yhlg6q75tb91gffupd0gbu9&st=7bpcq2my&raw=1" alt="مەیدان" onerror="this.parentElement.style.background='var(--grad)';this.style.display='none';this.parentElement.innerHTML='<span style=\'font-size:28px;color:#08090e;font-weight:900\'>م</span>'"></div>
+    <span class="splash-text">مەیدان</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill"></div></div>
+  <span class="splash-sub">پلاتفۆرمی کوردستانی کرێکاران و وەستایان</span>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-icon"><img src="https://www.dropbox.com/scl/fi/xzftuduzdy22c5o95iq0m/Picsart_26-05-17_20-31-33-991.jpg?rlkey=x3yhlg6q75tb91gffupd0gbu9&st=7bpcq2my&raw=1" alt="مەیدان لۆگۆ" onerror="this.parentElement.style.background='var(--grad)';this.style.display='none';this.parentElement.innerHTML='<span style=\'font-size:16px;color:#08090e;font-weight:900\'>م</span>'"></div>
+    <span class="logo-name">مەیدان</span>
+  </div>
+  <div class="hdr-badge"><i class="fas fa-location-dot"></i> کوردستان</div>
+</header>
+
+<!-- ROLE MODAL -->
+<div class="overlay" id="role-overlay" onclick="if(event.target===this)closeRoleModal()">
+  <div class="bottom-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">کامیان دەبینیت؟</div>
+    <button class="role-btn role-btn-master" onclick="filterByRole('master')">
+      <i class="fas fa-gavel"></i> وەستاکان
+    </button>
+    <button class="role-btn role-btn-worker" onclick="filterByRole('worker')">
+      <i class="fas fa-hard-hat"></i> کرێکارەکان
+    </button>
+    <button class="role-btn role-btn-cancel" onclick="closeRoleModal()">داخستن</button>
+  </div>
+</div>
+
+<!-- INSTALL BAR -->
+<div id="install-bar">
+  <div class="install-info">
+    <div class="install-icon"><img src="https://www.dropbox.com/scl/fi/xzftuduzdy22c5o95iq0m/Picsart_26-05-17_20-31-33-991.jpg?rlkey=x3yhlg6q75tb91gffupd0gbu9&st=7bpcq2my&raw=1" alt="مەیدان" onerror="this.parentElement.style.background='var(--grad)';this.style.display='none';this.parentElement.innerHTML='<span style=\'font-size:16px;color:#08090e;font-weight:900\'>م</span>'"></div>
+    <div class="install-txt">
+      <h4>ئەپی مەیدان داگرە</h4>
+      <p>بەکارهێنانی بێ ئینتەرنێت و خێراتر</p>
+    </div>
+  </div>
+  <div class="install-btns">
+    <button class="btn-install-yes" onclick="triggerInstall()">داگرتن</button>
+    <button class="btn-install-no" onclick="dismissInstall()">دواتر</button>
+  </div>
+</div>
+
+<!-- ═══════════ VIEWS ═══════════ -->
+
+<!-- HOME -->
+<div class="view active" id="home-view">
+  <div class="page-intro">
+    <h2>بدۆزەرەوە <span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">کرێکار</span></h2>
+    <p>پلاتفۆرمی نیشتمانی کوردستانی کرێکاران و وەستایان</p>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-item"><span class="stat-num">٥٠٠+</span><span class="stat-lbl">کرێکار</span></div>
+    <div class="stat-item"><span class="stat-num">١٢</span><span class="stat-lbl">شار</span></div>
+    <div class="stat-item"><span class="stat-num">٣٠+</span><span class="stat-lbl">پسپۆڕی</span></div>
+  </div>
+
+  <div class="sec-title">شارەکان</div>
+  <div class="cities-scroll" id="cities-container">
+    <div class="city-skel"></div>
+    <div class="city-skel"></div>
+    <div class="city-skel"></div>
+    <div class="city-skel"></div>
+  </div>
+
+  <div class="sec-title" id="workers-section-title" style="margin-top:24px;">ئەندامان</div>
+  <div id="featured-workers">
+    <div class="worker-skel"></div>
+    <div class="worker-skel"></div>
+    <div class="worker-skel"></div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="sec-title" style="margin-top:24px;">چیمان هەیە؟</div>
+  <div class="features-grid">
+    <div class="feat-card">
+      <div class="feat-icon"><i class="fas fa-search"></i></div>
+      <div class="feat-title">گەڕانی خێرا</div>
+      <div class="feat-desc">بە ناو، پسپۆڕی، یان شار بگەڕێ</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon"><i class="fas fa-map-marker-alt"></i></div>
+      <div class="feat-title">بە شار</div>
+      <div class="feat-desc">کرێکارانی شارەکەت بدۆزەرەوە</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon"><i class="fas fa-gavel"></i></div>
+      <div class="feat-title">وەستایان</div>
+      <div class="feat-desc">وەستایانی کارکوت و پسپۆڕ</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon"><i class="fas fa-hard-hat"></i></div>
+      <div class="feat-title">کرێکاران</div>
+      <div class="feat-desc">کرێکارانی ئامادەی کار</div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="sec-title">چۆن کار دەکات؟</div>
+  <div class="steps-wrap">
+    <div class="step-item">
+      <div class="step-num">١</div>
+      <div class="step-content">
+        <div class="step-title">شارەکەت هەڵبژێرە</div>
+        <div class="step-desc">لە لیستی شارەکانەوە شارەکەت هەڵبژێرە</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">٢</div>
+      <div class="step-content">
+        <div class="step-title">جۆر هەڵبژێرە</div>
+        <div class="step-desc">وەستا یان کرێکار — هەرکامی پێویستتە هەڵبژێرە</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">٣</div>
+      <div class="step-content">
+        <div class="step-title">پەیوەندی بکە</div>
+        <div class="step-desc">ژمارەی مۆبایل دەبینیت و ڕاستەوخۆ پەیوەندی دەکەیت</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div class="view" id="search-view">
+  <div class="page-intro">
+    <h2>گەڕان <span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">خێرا</span></h2>
+    <p>لە نێو هەموو ئەندامانەکاندا بگەڕێ</p>
+  </div>
+  <div class="search-wrap">
+    <i class="fas fa-search search-icon"></i>
+    <input type="search" id="search-input" class="search-input" placeholder="ناو، پسپۆڕی، یان شار...">
+  </div>
+  <div id="all-workers-list">
+    <div class="worker-skel"></div>
+    <div class="worker-skel"></div>
+    <div class="worker-skel"></div>
+  </div>
+</div>
+
+<!-- ADD POST -->
+<div class="view" id="add-view">
+  <div class="form-card">
+    <h2>بڵاوکردنەوەی داواکاری</h2>
+    <div class="field">
+      <label class="field-label">ناونیشان</label>
+      <input type="text" id="post-title" class="field-input" placeholder="بۆ نموونە: پێویستم بە وەستایە کاشی">
+    </div>
+    <div class="field">
+      <label class="field-label">زانیاری زیاتر و ژمارەی مۆبایل</label>
+      <textarea id="post-desc" class="field-input" rows="5" placeholder="شوێنی کار، کاتی کار، و ژمارەی پەیوەندی بنووسە..."></textarea>
+    </div>
+    <button class="btn-submit" id="post-btn" onclick="submitPost()">
+      <i class="fas fa-paper-plane"></i> ناردن بۆ ئادمین
+    </button>
+  </div>
+</div>
+
+<!-- FOOTER NAV -->
+<footer>
+  <div class="tab active" onclick="switchTab('home',this)">
+    <i class="fas fa-home"></i>
+    <span>سەرەکی</span>
+  </div>
+  <div class="tab" onclick="switchTab('search',this)">
+    <i class="fas fa-search"></i>
+    <span>گەڕان</span>
+  </div>
+  <div class="tab-add" onclick="switchTab('add',document.querySelectorAll('.tab')[1])">
+    <i class="fas fa-plus"></i>
+  </div>
+  <div class="tab" id="tab-placeholder" style="min-width:56px;"></div>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+/* ───────── CONFIG ───────── */
+const CACHE_TTL = 10 * 60 * 1000; // 10 minutes
+const FB = {
+  apiKey:"AIzaSyDxuSgqRAU-cZAIvk5Afoymo1zCKJsF6gE",
+  authDomain:"dana-tv-277d8.firebaseapp.com",
+  projectId:"dana-tv-277d8",
+  storageBucket:"dana-tv-277d8.firebasestorage.app",
+  messagingSenderId:"1087964244326",
+  appId:"1:1087964244326:web:f6defdcbf878ed1f8d80a7"
+};
+
+const app = initializeApp(FB);
+const db  = getFirestore(app);
+
+/* ───────── CACHE HELPERS ───────── */
+function saveCache(key, data) {
+  try {
+    localStorage.setItem(key, JSON.stringify({ t: Date.now(), d: data }));
+  } catch(e){}
+}
+
+function loadCache(key) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    const obj = JSON.parse(raw);
+    if (Date.now() - obj.t > CACHE_TTL) return null;
+    return obj.d;
+  } catch(e){ return null; }
+}
+
+/* ───────── TOAST ───────── */
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+/* ───────── STATE ───────── */
+let selectedCity = '';
+let allWorkers   = [];
+let searchLoaded = false;
+
+/* ───────── TABS ───────── */
+window.switchTab = function(id, el) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id + '-view').classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  if (id === 'search' && !searchLoaded) { loadAllWorkers(); searchLoaded = true; }
+};
+
+/* ───────── CITIES ───────── */
+async function loadCities() {
+  const cached = loadCache('cities');
+  if (cached) { renderCities(cached); return; }
+  try {
+    const snap = await getDocs(collection(db, 'cities'));
+    const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    saveCache('cities', data);
+    renderCities(data);
+  } catch(e) {
+    document.getElementById('cities-container').innerHTML =
+      '<p style="color:var(--muted);font-size:13px;padding:10px;">کێشەی پەیوەندی. پشکنینی ئینتەرنێت بکە</p>';
+  }
+}
+
+function renderCities(data) {
+  const c = document.getElementById('cities-container');
+  if (!data.length) { c.innerHTML = '<p style="color:var(--muted);font-size:12px;padding:10px;">هیچ شارێک نییە</p>'; return; }
+  c.innerHTML = data.map(city => `
+    <div class="city-card" onclick="openRoleModal('${city.id}','${city.name}')">
+      <img src="${city.img}" loading="lazy" alt="${city.name}"
+           onerror="this.src='https://placehold.co/110x140/0e1018/c8a84b?text=${encodeURIComponent(city.name[0])}'">
+      <span class="city-name">${city.name}</span>
+    </div>`).join('');
+}
+
+/* ───────── ROLE MODAL ───────── */
+window.openRoleModal = function(id, name) {
+  selectedCity = id;
+  document.getElementById('role-overlay').classList.add('open');
+};
+window.closeRoleModal = function() {
+  document.getElementById('role-overlay').classList.remove('open');
+};
+
+/* ───────── FILTER BY ROLE ───────── */
+window.filterByRole = async function(role) {
+  closeRoleModal();
+  const title = document.getElementById('workers-section-title');
+  title.textContent = role === 'master' ? 'وەستاکان' : 'کرێکارەکان';
+  const grid = document.getElementById('featured-workers');
+  grid.innerHTML = '<div class="worker-skel"></div><div class="worker-skel"></div><div class="worker-skel"></div>';
+
+  const cacheKey = `workers_${selectedCity}_${role}`;
+  const cached = loadCache(cacheKey);
+  if (cached) { renderWorkers(cached, 'featured-workers'); return; }
+
+  try {
+    const q = query(collection(db,'users'),
+      where('city','==', selectedCity),
+      where('role','==', role));
+    const snap = await getDocs(q);
+    const data = snap.docs.map(d => d.data());
+    saveCache(cacheKey, data);
+    renderWorkers(data, 'featured-workers');
+  } catch(e) {
+    grid.innerHTML = '<div class="empty"><i class="fas fa-wifi-slash"></i><p>کێشەی پەیوەندی</p></div>';
+  }
+};
+
+/* ───────── ALL WORKERS (search) ───────── */
+async function loadAllWorkers() {
+  const cached = loadCache('all_workers');
+  if (cached) { allWorkers = cached; renderWorkers(cached, 'all-workers-list'); return; }
+  try {
+    const snap = await getDocs(collection(db,'users'));
+    allWorkers = snap.docs.map(d => d.data());
+    saveCache('all_workers', allWorkers);
+    renderWorkers(allWorkers, 'all-workers-list');
+  } catch(e) {
+    document.getElementById('all-workers-list').innerHTML =
+      '<div class="empty"><i class="fas fa-wifi-slash"></i><p>کێشەی پەیوەندی</p></div>';
+  }
+}
+
+/* ───────── RENDER WORKERS ───────── */
+function renderWorkers(list, containerId) {
+  const c = document.getElementById(containerId);
+  if (!list.length) {
+    c.innerHTML = '<div class="empty"><i class="fas fa-users-slash"></i><p>هیچ ئەندامێک نییە لێرە</p></div>';
+    return;
+  }
+  c.innerHTML = list.map(w => {
+    const isMaster = w.role === 'master';
+    const badgeClass = isMaster ? 'badge-master' : 'badge-worker';
+    const badgeText  = isMaster ? 'وەستا' : 'کرێکار';
+    const img = w.profileImage || `https://placehold.co/64x64/0e1018/c8a84b?text=${encodeURIComponent((w.name||'?')[0])}`;
+    return `
+    <div class="worker-card">
+      <div class="online-dot"></div>
+      <img class="worker-avatar" src="${img}" loading="lazy" alt="${w.name}"
+           onerror="this.src='https://placehold.co/64x64/0e1018/c8a84b?text=${encodeURIComponent((w.name||'?')[0])}'">
+      <div class="worker-info">
+        <div class="worker-name">${w.name||'—'}</div>
+        <div class="worker-skill"><i class="fas fa-tools" style="font-size:10px;color:var(--gold3);"></i> ${w.skills||'—'}</div>
+        <div class="worker-phone"><i class="fas fa-phone"></i> ${w.phone||'—'}</div>
+      </div>
+      <span class="role-badge ${badgeClass}">${badgeText}</span>
+    </div>`;
+  }).join('');
+}
+
+/* ───────── SEARCH ───────── */
+document.getElementById('search-input').addEventListener('input', e => {
+  const val = e.target.value.toLowerCase().trim();
+  if (!val) { renderWorkers(allWorkers, 'all-workers-list'); return; }
+  const filtered = allWorkers.filter(w =>
+    (w.name||'').toLowerCase().includes(val) ||
+    (w.skills||'').toLowerCase().includes(val) ||
+    (w.phone||'').includes(val)
+  );
+  renderWorkers(filtered, 'all-workers-list');
+});
+
+/* ───────── ADS ───────── */
+async function loadAds() {
+  // Ads are in the home view — show in a side column on desktop only
+  // For mobile layout we skip the ad sidebar and show inline after workers
+  const cached = loadCache('ads');
+  if (cached) { /* already loaded silently */ return; }
+  try {
+    const snap = await getDocs(collection(db,'ads'));
+    const data = snap.docs.map(d => d.data());
+    saveCache('ads', data);
+  } catch(e){}
+}
+
+/* ───────── POST SUBMIT ───────── */
+window.submitPost = async function() {
+  const title = document.getElementById('post-title').value.trim();
+  const desc  = document.getElementById('post-desc').value.trim();
+  if (!title || !desc) { toast('تکایە هەموو خانەکان پڕ بکەوە'); return; }
+  const btn = document.getElementById('post-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ناردن...';
+  try {
+    await addDoc(collection(db,'posts'), {
+      title, description: desc, timestamp: new Date()
+    });
+    toast('✓ داواکارییەکەت بۆ ئادمین نێردرا');
+    document.getElementById('post-title').value = '';
+    document.getElementById('post-desc').value = '';
+    setTimeout(() => switchTab('home', document.querySelector('.tab')), 800);
+  } catch(e) {
+    toast('کێشەی پەیوەندی. دووبارە هەوڵبدەرەوە');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> ناردن بۆ ئادمین';
+  }
+};
+
+/* ───────── PWA INSTALL ───────── */
+let deferredPrompt;
+
+// Show install popup on first visit after splash
+function maybeShowInstallPopup() {
+  if (!localStorage.getItem('install_dismissed') && !localStorage.getItem('app_installed')) {
+    setTimeout(() => {
+      document.getElementById('install-popup').classList.add('open');
+    }, 2500);
+  }
+}
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // Update popup button to show it's installable
+  const btn = document.getElementById('popup-install-btn');
+  if (btn) { btn.innerHTML = '<i class="fas fa-download"></i> داگرتنی ئەپ'; }
+  // Also update old install bar
+  if (!localStorage.getItem('install_dismissed')) {
+    setTimeout(() => { document.getElementById('install-bar').style.display = 'flex'; }, 5000);
+  }
+});
+
+window.appinstalled = function() {
+  localStorage.setItem('app_installed', '1');
+  document.getElementById('install-popup').classList.remove('open');
+  document.getElementById('install-bar').style.display = 'none';
+};
+
+window.closeInstallPopup = function() {
+  document.getElementById('install-popup').classList.remove('open');
+  localStorage.setItem('install_dismissed', '1');
+};
+
+window.triggerInstallFromPopup = function() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(choice => {
+      if (choice.outcome === 'accepted') {
+        localStorage.setItem('app_installed', '1');
+      }
+      deferredPrompt = null;
+    });
+  } else {
+    // Fallback: guide user to browser menu
+    toast('لە منیوی گەڕۆکەکەت "Add to Home Screen" هەڵبژێرە');
+  }
+  document.getElementById('install-popup').classList.remove('open');
+};
+
+window.triggerInstall = function() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
+  }
+  document.getElementById('install-bar').style.display = 'none';
+};
+
+window.dismissInstall = function() {
+  document.getElementById('install-bar').style.display = 'none';
+  localStorage.setItem('install_dismissed', '1');
+};
+
+/* ───────── INIT ─────────
+   Load cities + ads in parallel immediately.
+   Workers load only when user taps a city or opens search.
+   Cached data renders instantly — no waiting.
+─────────────────────────── */
+async function init() {
+  // Fire both fetches simultaneously
+  await Promise.all([loadCities(), loadAds()]);
+
+  // Hide splash after data is ready (or after 1.8s max)
+  document.getElementById('splash').style.transition = 'opacity .35s ease';
+  document.getElementById('splash').style.opacity   = '0';
+  setTimeout(() => { document.getElementById('splash').style.display = 'none'; }, 350);
+
+  // Show latest workers on home (cached = instant)
+  const cachedW = loadCache('all_workers');
+  if (cachedW && cachedW.length) {
+    renderWorkers(cachedW.slice(0, 6), 'featured-workers');
+    document.getElementById('workers-section-title').textContent = 'نوێترین ئەندامان';
+  } else {
+    // load lazily without blocking
+    getDocs(collection(db,'users')).then(snap => {
+      const data = snap.docs.map(d => d.data());
+      saveCache('all_workers', data);
+      allWorkers = data;
+      renderWorkers(data.slice(0, 6), 'featured-workers');
+    }).catch(() => {
+      document.getElementById('featured-workers').innerHTML =
+        '<div class="empty"><i class="fas fa-wifi-slash"></i><p>کێشەی پەیوەندی. پشکنینی ئینتەرنێت بکە</p></div>';
+    });
+  }
+}
+
+init().then(() => maybeShowInstallPopup());
+</script>
+</body>
+</html>
